@@ -8,12 +8,16 @@ data = {
 
 df = pd.DataFrame(data)
 
-df['kategori_umur'] = df['usia'].apply(lambda row: 'Muda' if row < 30 else 'Tua')
+df['bonus'] = 0
+for index, row in df.iterrows():
+    df['bonus_gaji'] = df.apply(lambda row: 0.05 * row['gaji'], axis=1)
+df['bonus_gaji'] = df['gaji'] + df['bonus']
+print(df)
 
-df['bonus_gaji'] = df.apply(lambda row:row['gaji']*1.05 if row['usia'] < 30 else row['gaji']*1.1, axis=1)
-
-df['bonus_karyawan_senior'] = df.apply(lambda row:row['bonus_gaji']*2 if row['usia'] >= 30 else row['bonus_gaji']*1, axis=1)
-
+for index, row in df.iterrows():
+	df.at[index, 'Tambahan_bonus'] = (lambda x: 0.02 * x if row['usia'] > 30 else 0)(row['bonus_gaji'])
+df['Gaji_setelah_tambahan_bonus'] = df['bonus_gaji'] + df['Tambahan_bonus']
+pd.set_option('display.max_columns', None)
 print(df)
 
 # Pertanyaan 1:
